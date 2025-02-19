@@ -1,0 +1,19 @@
+{
+  "name": "routehandlersex",
+  "version": "1.0.0",
+  "description": "Checking multiple route handlers",
+  "main": "router.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "express",
+    "routes"
+  ],
+  "author": "rajuKunarapu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
