@@ -8,7 +8,7 @@ const app = express();  // Instance of express
 app.use(express.json()) // middleware for converting JSON objects to JS objects
 
 
-app.use('/auth', authRoutes)  // signUp
-app.use('/user', userRoutes)  // getUserdata
+app.use('/auth', authRoutes)  // only for auth
+app.use('/user', userRoutes)  // only for user
 
 module.exports = app;
