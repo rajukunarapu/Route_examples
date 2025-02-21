@@ -2,6 +2,8 @@ const userModel = require('../models/userModel');
 const { validateSinupUser } = require('../utlis/validation')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
+const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken')
 
 exports.signUp = async (req, res) => {
     const { firstName, lastName, emailId, passWord } = req.body;
@@ -36,10 +38,12 @@ exports.login = async (req, res) => {
 
         // comparing passwords
         const validPassWord = await bcrypt.compare(passWord, user.passWord)
-        if (!validPassWord) {
-            throw new Error("Invalid user Credentials")
-        } else {
+        if (validPassWord) {
+            const token = await jwt.sign({ _id: user._id }, "DevTinder@123")
+            res.cookie('token', token)
             res.send("Login successfull")
+        } else {
+            throw new Error("Invalid user Credentials")
         }
     } catch (err) {
         res.status(400).send("ERROR : " + err.message)

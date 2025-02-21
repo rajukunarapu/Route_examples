@@ -1,4 +1,5 @@
 const userModel = require('../models/userModel')
+const jwt = require('jsonwebtoken')
 
 exports.getAllUsersData = async (req, res) => {
     try {
@@ -57,4 +58,24 @@ exports.deleteUser = async (req, res) => {
         res.status(400).send('Delete failed : ', err.message)
     }
 
+}
+
+// user profile
+exports.profile = async (req, res) => {
+    try {
+        const { token } = req.cookies
+        if (!token) {
+            throw new Error("token is not valid")
+        }
+        const decoded = jwt.verify(token, "DevTinder@123")
+        const { _id } = decoded
+        const user = await userModel.findById(_id)
+        if (!user) {
+            throw new Error('user data not found')
+        } else {
+            res.send(user)
+        }
+    } catch (err) {
+        res.status(400).send("ERROR : " + err.message)
+    }
 }
