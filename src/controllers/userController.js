@@ -17,7 +17,7 @@ exports.getUserData = async (req, res) => {
     try {
         const user = await userModel.find({ _id: id })
         if (user.length === 0) {
-            res.status(404).send('User data not found')
+            throw new Error('user not found')
         } else {
             res.send(user)
         }
@@ -30,11 +30,18 @@ exports.updateUser = async (req, res) => {
     const userId = req.body.userId        // For an instance, we are giving id in payloadd
     const data = req.body
     try {
+        const UPDATE_ALLOWED = ["gender", "photoURL", "userId"]
+        // for certain updates
+        const isAllowed = Object.keys(data).every(key => UPDATE_ALLOWED.includes(key))
+
+        if (!isAllowed) {
+            throw new Error('update not allowed')
+        }
         const user = await userModel.findByIdAndUpdate(userId, data, {
             runValidators: true,
             returnDocument: "after"
         })
-        res.send('updated user successfully')
+        res.send('user updated successfully')
     } catch (err) {
         res.status(400).send('update Failed : ' + err.message)
     }
@@ -45,9 +52,9 @@ exports.deleteUser = async (req, res) => {
     const { userId } = req.body;
     try {
         const user = await userModel.findByIdAndDelete(userId)
-        res.send('deleted user successfully')
+        res.send('user deleted successfully')
     } catch (err) {
-        res.status(400).send('Delete user failed : ', err.message)
+        res.status(400).send('Delete failed : ', err.message)
     }
 
 }
