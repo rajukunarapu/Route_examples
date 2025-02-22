@@ -67,7 +67,7 @@ exports.profile = async (req, res) => {
         if (!token) {
             throw new Error("token is not valid")
         }
-        const decoded = jwt.verify(token, "DevTinder@123")
+        const decoded = jwt.verify(token, `${process.env.JWT_SECRETE}`)
         const { _id } = decoded
         const user = await userModel.findById(_id)
         if (!user) {

@@ -35,11 +35,10 @@ exports.login = async (req, res) => {
         if (!user) {
             throw new Error('Invalid user Credentials')
         }
-
         // comparing passwords
-        const validPassWord = await bcrypt.compare(passWord, user.passWord)
+        const validPassWord = await user.bcryptValidPassword(passWord)
         if (validPassWord) {
-            const token = await jwt.sign({ _id: user._id }, "DevTinder@123")
+            const token = await user.generateToken()
             res.cookie('token', token)
             res.send("Login successfull")
         } else {
