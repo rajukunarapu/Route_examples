@@ -1,15 +1,13 @@
 const userModel = require('../models/userModel');
-const { validateSinupUser } = require('../utlis/validation')
+const { validateSignUpUser } = require('../utlis/validation')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
-const cookieParser = require('cookie-parser')
-const jwt = require('jsonwebtoken')
 
 exports.signUp = async (req, res) => {
     const { firstName, lastName, emailId, passWord } = req.body;
     try {
         //validation
-        validateSinupUser(req)
+        validateSignUpUser(req)
         // password hash
         const passwordHash = await bcrypt.hash(passWord, 10)   //salt is 10 for better encryption
         const user = new userModel({
@@ -22,7 +20,7 @@ exports.signUp = async (req, res) => {
     }
 }
 
-exports.login = async (req, res) => {
+exports.logIn = async (req, res) => {
     const { emailId, passWord } = req.body;
     try {
         // validating emailId 
@@ -36,10 +34,10 @@ exports.login = async (req, res) => {
             throw new Error('Invalid user Credentials')
         }
         // comparing passwords
-        const validPassWord = await user.bcryptValidPassword(passWord)
+        const validPassWord = await user.bcryptValidPassword(passWord)   //schema method
         if (validPassWord) {
-            const token = await user.generateToken()
-            res.cookie('token', token)
+            const token = await user.generateToken()   //schema method
+            res.cookie('token', token, { expires: new Date(Date.now() + 8 * 3600000) })
             res.send("Login successfull")
         } else {
             throw new Error("Invalid user Credentials")

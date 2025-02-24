@@ -1,6 +1,6 @@
 const validator = require('validator');
 
-const validateSinupUser = (req) => {
+const validateSignUpUser = (req) => {
     const { firstName, lastName, emailId, passWord } = req.body;
     if (!firstName || !lastName) {
         throw new Error('name is not valid')
@@ -13,4 +13,4 @@ const validateSinupUser = (req) => {
     }
 }
 
-module.exports = { validateSinupUser }
+module.exports = { validateSignUpUser }

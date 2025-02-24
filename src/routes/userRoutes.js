@@ -1,13 +1,11 @@
 const express = require('express');
-const { getAllUsersData, getUserData, updateUser, deleteUser, profile } = require('../controllers/userController');
+const { profileUpdate, profile } = require('../controllers/userController');
+const { authMiddleware } = require('../middlewares/authMiddleware');
 
 
 const router = express.Router();
 
-router.get('/feed', getAllUsersData)
-router.get('/getUser/:id', getUserData)
-router.patch('/updateUser', updateUser)
-router.get('/deleteUser', deleteUser)
-router.get('/profile', profile)
+router.patch('/profileUpdate', authMiddleware, profileUpdate)
+router.get('/profile', authMiddleware, profile)
 
 module.exports = router;
