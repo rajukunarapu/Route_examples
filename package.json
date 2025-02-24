@@ -1,5 +1,5 @@
 {
-  "name": "routehandlersex",
+  "name": "routes",
   "version": "1.0.0",
   "description": "Checking multiple route handlers",
   "main": "app.js",
@@ -22,6 +22,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
+    "routes": "file:",
     "validator": "^13.12.0"
   }
 }
