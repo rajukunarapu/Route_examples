@@ -1,6 +1,9 @@
 const userModel = require('../models/userModel')
 const jwt = require('jsonwebtoken')
+const validator = require('validator')
+const bcrypt = require('bcrypt')
 
+// profile update
 exports.profileUpdate = async (req, res) => {
     const _id = req._id
     const data = req.body
@@ -23,7 +26,6 @@ exports.profileUpdate = async (req, res) => {
 
 }
 
-
 // user profile
 exports.profile = async (req, res) => {
     try {
@@ -38,3 +40,25 @@ exports.profile = async (req, res) => {
         res.status(400).send("ERROR : " + err.message)
     }
 }
+
+// forget password
+exports.forgetPassword = async (req, res) => {
+    const _id = req._id
+    const newPassword = req.body.passWord
+    try {
+        if (!validator.isStrongPassword(newPassword)) {
+            return res.status(400).json({ message: " It's not a strong password" })
+        }
+        const user = await userModel.findById(_id)
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
+        }
+        const passwordHash = await bcrypt.hash(newPassword, 10)
+
+        await userModel.findByIdAndUpdate(_id, { passWord: passwordHash })
+        res.json({ message: "password has been updated" })
+
+    } catch (error) {
+        res.status(400).json({ message: "Error: " + error.message })
+    }
+} 

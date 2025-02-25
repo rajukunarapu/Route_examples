@@ -12,7 +12,7 @@ const authMiddleware = async (req, res, next) => {
         next()
 
     } catch (error) {
-        res.status(400).res("ERROR : ", error.message)
+        res.status(400).json({ message: "ERROR : " + error.message })
     }
 
 
