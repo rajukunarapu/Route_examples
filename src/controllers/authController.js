@@ -6,7 +6,7 @@ const validator = require('validator')
 exports.signUp = async (req, res) => {
     const { firstName, lastName, emailId, passWord } = req.body;
     try {
-        //validation
+        //validation-data sanitization
         validateSignUpUser(req)
         // password hash
         const passwordHash = await bcrypt.hash(passWord, 10)   //salt is 10 for better encryption
@@ -14,7 +14,7 @@ exports.signUp = async (req, res) => {
             firstName, lastName, emailId, passWord: passwordHash
         });
         await user.save();
-        res.send('user data successfully added')
+        res.send('signup successfull')
     } catch (err) {
         res.status(400).send('ERROR :' + err.message);
     }
@@ -48,3 +48,9 @@ exports.logIn = async (req, res) => {
 
 }
 
+exports.logOut = (req, res) => {
+    res
+        .cookie('token', null, { expires: new Date(Date.now()) })
+        .send('logout successfull')
+
+}

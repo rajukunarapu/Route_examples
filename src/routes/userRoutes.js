@@ -5,7 +5,7 @@ const { authMiddleware } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.patch('/profileUpdate', authMiddleware, profileUpdate)
-router.get('/profile', authMiddleware, profile)
+router.patch('/profile/edit', authMiddleware, profileUpdate)
+router.get('/profile/view', authMiddleware, profile)
 
 module.exports = router;
