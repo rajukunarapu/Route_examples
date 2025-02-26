@@ -21,16 +21,12 @@ exports.connectionRequest = async (req, res) => {
             $or: [{ fromUserId, toUserId }, { fromUserId: toUserId, toUserId: fromUserId }]
         })
         if (existingConnectionRequest) {
-            return res.status(400).json({ message: 'connection alredy sent' })
-        }
-        // prevent the request to ourself
-        if (fromUserId === toUserId) {
-            return res.status(400).json({ message: "Can't send request to ourself" })
+            return res.status(400).json({ message: 'connection request already sent' })
         }
 
         const newConnectionRequest = new ConnectionRequestModel({ fromUserId, toUserId, status })
         await newConnectionRequest.save();
-        res.json({ message: `${fromUser.firstName} has sent a connection to ${toUser.firstName} ` })
+        res.json({ message: `${fromUser.firstName} sent an ${status} request to ${toUser.firstName} `, data: newConnectionRequest })
 
     } catch (error) {
         res.status(400).json({ message: "Error: " + error.message })
