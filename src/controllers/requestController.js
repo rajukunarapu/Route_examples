@@ -20,9 +20,12 @@ exports.connectionRequest = async (req, res) => {
         const existingConnectionRequest = await ConnectionRequestModel.findOne({
             $or: [{ fromUserId, toUserId }, { fromUserId: toUserId, toUserId: fromUserId }]
         })
-
         if (existingConnectionRequest) {
             return res.status(400).json({ message: 'connection alredy sent' })
+        }
+        // prevent the request to ourself
+        if (fromUserId === toUserId) {
+            return res.status(400).json({ message: "Can't send request to ourself" })
         }
 
         const newConnectionRequest = new ConnectionRequestModel({ fromUserId, toUserId, status })
