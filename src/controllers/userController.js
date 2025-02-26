@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 
-// profile update
+// profile-update request handler
 exports.profileUpdate = async (req, res) => {
     const _id = req._id
     const data = req.body
@@ -26,7 +26,7 @@ exports.profileUpdate = async (req, res) => {
 
 }
 
-// user profile
+// user-profile request handler
 exports.profile = async (req, res) => {
     try {
         const _id = req._id
@@ -41,7 +41,7 @@ exports.profile = async (req, res) => {
     }
 }
 
-// forget password
+// forget-password request handler
 exports.forgetPassword = async (req, res) => {
     const _id = req._id
     const newPassword = req.body.passWord

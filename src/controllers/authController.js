@@ -3,6 +3,7 @@ const { validateSignUpUser } = require('../utlis/validation')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
 
+// sign-up request handler
 exports.signUp = async (req, res) => {
     const { firstName, lastName, emailId, passWord } = req.body;
     try {
@@ -20,6 +21,7 @@ exports.signUp = async (req, res) => {
     }
 }
 
+// sign-in request handler
 exports.logIn = async (req, res) => {
     const { emailId, passWord } = req.body;
     try {
@@ -48,6 +50,7 @@ exports.logIn = async (req, res) => {
 
 }
 
+// log-out request handler
 exports.logOut = (req, res) => {
     res
         .cookie('token', null, { expires: new Date(Date.now()) })

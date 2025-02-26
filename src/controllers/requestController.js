@@ -1,6 +1,7 @@
 const { ConnectionRequestModel } = require("../models/requestConnections")
 const User = require("../models/userModel")
 
+// connection-requests handler
 exports.connectionRequest = async (req, res) => {
     const fromUserId = req._id
     const toUserId = req.params.userId

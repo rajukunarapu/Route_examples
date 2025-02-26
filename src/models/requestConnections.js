@@ -21,12 +21,15 @@ const connectionRequestSchema = new mongoose.Schema({
     timestamps: true
 })
 
+// It executes everytime before saving the documents into DB.
 connectionRequestSchema.pre("save", function (next) {
     if (this.fromUserId.equals(this.toUserId)) {
         throw new Error("cannot send a connection request to yourself")
     }
     next()
 })
+
+connectionRequestSchema.index({ fromUserId: 1 }, { toUserId: 1 })
 
 const ConnectionRequestModel = mongoose.model("connectRequests", connectionRequestSchema)
 
