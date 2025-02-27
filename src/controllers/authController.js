@@ -5,8 +5,8 @@ const validator = require('validator')
 
 // sign-up request handler
 exports.signUp = async (req, res) => {
-    const { firstName, lastName, emailId, passWord } = req.body;
     try {
+        const { firstName, lastName, emailId, passWord } = req.body;
         //validation-data sanitization
         validateSignUpUser(req)
         // password hash
@@ -23,8 +23,8 @@ exports.signUp = async (req, res) => {
 
 // sign-in request handler
 exports.logIn = async (req, res) => {
-    const { emailId, passWord } = req.body;
     try {
+        const { emailId, passWord } = req.body;
         // validating emailId 
         const validateEmailId = validator.isEmail(emailId)
         if (!validateEmailId) {

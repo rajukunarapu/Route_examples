@@ -19,9 +19,9 @@ exports.profileView = async (req, res) => {
 
 // profile-update request handler
 exports.profileUpdate = async (req, res) => {
-    const loggedInUserId = req._id
-    const requestBody = req.body
     try {
+        const loggedInUserId = req._id
+        const requestBody = req.body
         const UPDATE_ALLOWED = ["firstName", "lastName", "age", "gender", "photoURL"]
         // for certain updates
         const isAllowed = Object.keys(requestBody).every(key => UPDATE_ALLOWED.includes(key))
@@ -43,9 +43,9 @@ exports.profileUpdate = async (req, res) => {
 
 // forget-password request handler
 exports.forgetPassword = async (req, res) => {
-    const loggedInUserId = req._id
-    const newPassword = req.body.passWord
     try {
+        const loggedInUserId = req._id
+        const newPassword = req.body.passWord
         if (!validator.isStrongPassword(newPassword)) {
             return res.status(400).json({ message: " It's not a strong password" })
         }
