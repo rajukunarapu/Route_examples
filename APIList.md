@@ -5,10 +5,10 @@
   - auth/login
   - auth/logout
 
-## user
-  - user/profile/view
-  - user/profile/update
-  - user/profile/forgetPassword
+## profile
+  - profile/view
+  - profile/update
+  - profile/forgetPassword
 
 ## Requests
   - request/send/ignored/:userId
@@ -16,6 +16,7 @@
   - request/send/accepted/:userId
   - request/send/rejected/:userId
 
-## connnects
-  - connection/feed
-  - connection/requests 
+## user
+  - user/recievedRequest
+  - user/connection/feed
+  - user/connection/requests 

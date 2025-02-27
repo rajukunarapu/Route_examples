@@ -15,9 +15,9 @@ exports.signUp = async (req, res) => {
             firstName, lastName, emailId, passWord: passwordHash
         });
         await user.save();
-        res.send('signup successfull')
+        res.json({ message: 'signup successfull' })
     } catch (err) {
-        res.status(400).send('ERROR :' + err.message);
+        res.status(400).json({ message: 'ERROR :' + err.message });
     }
 }
 
@@ -28,24 +28,24 @@ exports.logIn = async (req, res) => {
         // validating emailId 
         const validateEmailId = validator.isEmail(emailId)
         if (!validateEmailId) {
-            throw new Error("Enter a valid emailId")
+            return res.status(400).json({ message: "Enter a valid emailId" })
         }
         // Finding the user based on emailId
         const user = await userModel.findOne({ emailId: emailId })
         if (!user) {
-            throw new Error('Invalid user Credentials')
+            return res.status(400).json({ message: 'Invalid user Credentials' })
         }
         // comparing passwords
         const validPassWord = await user.bcryptValidPassword(passWord)   //schema method
         if (validPassWord) {
             const token = await user.generateToken()   //schema method
             res.cookie('token', token, { expires: new Date(Date.now() + 8 * 3600000) })
-            res.send("Login successfull")
+            res.json({ message: "Login successfull" })
         } else {
-            throw new Error("Invalid user Credentials")
+            return res.status(400).json({ message: "Invalid user Credentials" })
         }
     } catch (err) {
-        res.status(400).send("ERROR : " + err.message)
+        res.status(400).json({ message: "ERROR : " + err.message })
     }
 
 }
@@ -54,6 +54,6 @@ exports.logIn = async (req, res) => {
 exports.logOut = (req, res) => {
     res
         .cookie('token', null, { expires: new Date(Date.now()) })
-        .send('logout successfull')
+        .json({ message: 'logout successfull' })
 
 }

@@ -1,64 +1,42 @@
-const userModel = require('../models/userModel')
-const jwt = require('jsonwebtoken')
-const validator = require('validator')
-const bcrypt = require('bcrypt')
+const { ConnectionRequestModel } = require('../models/requestConnections')
+const User = require('../models/userModel')
 
-// profile-update request handler
-exports.profileUpdate = async (req, res) => {
-    const _id = req._id
-    const data = req.body
+exports.recievedConnections = async (req, res) => {
     try {
-        const UPDATE_ALLOWED = ["firstName", "lastName", "age", "gender", "photoURL"]
-        // for certain updates
-        const isAllowed = Object.keys(data).every(key => UPDATE_ALLOWED.includes(key))
-
-        if (!isAllowed) {
-            throw new Error('update not allowed')
-        }
-        await userModel.findByIdAndUpdate(_id, data, {
-            runValidators: true,
-            returnDocument: "after"
-        })
-        res.send('user updated successfully')
-    } catch (err) {
-        res.status(400).send('update Failed : ' + err.message)
-    }
-
-}
-
-// user-profile request handler
-exports.profile = async (req, res) => {
-    try {
-        const _id = req._id
-        const user = await userModel.findById(_id)
+        const loggedInUserId = req._id
+        const user = await User.findById(loggedInUserId)
         if (!user) {
-            throw new Error('user data not found')
-        } else {
-            res.send(user)
+            return res.status(404).json({ message: "user not found" })
         }
-    } catch (err) {
-        res.status(400).send("ERROR : " + err.message)
+        const requestConnections = await ConnectionRequestModel.find({
+            toUserId: loggedInUserId,
+            status: 'interested'
+        }).populate('toUserId', ['firstName', 'lastName']).populate('fromUserId', ['firstName', 'lastName'])
+        if (requestConnections.length === 0) {
+            return res.status(404).json({ message: "No connections found" })
+        }
+        res.json({ message: "Fetched data successfully", data: requestConnections })
+    } catch (error) {
+        res.status(400).json({ message: "ERROR: " + error.message })
     }
 }
 
-// forget-password request handler
-exports.forgetPassword = async (req, res) => {
-    const _id = req._id
-    const newPassword = req.body.passWord
+exports.usersFeed = async (req, res) => {
     try {
-        if (!validator.isStrongPassword(newPassword)) {
-            return res.status(400).json({ message: " It's not a strong password" })
-        }
-        const user = await userModel.findById(_id)
+        const loggedInUserId = req._id
+        const user = await User.findById(loggedInUserId)
         if (!user) {
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ message: "user not found" })
         }
-        const passwordHash = await bcrypt.hash(newPassword, 10)
 
-        await userModel.findByIdAndUpdate(_id, { passWord: passwordHash })
-        res.json({ message: "password has been updated" })
+        const users = await User.find({ _id: { $ne: loggedInUserId } })
+        if (!users) {
+            return res.status(404).json({ message: "Users data not found" })
+        }
+        res.send({ message: "fetched data successfully", data: users })
 
     } catch (error) {
-        res.status(400).json({ message: "Error: " + error.message })
+        res.status(400).json({ message: "ERROR: " + error.message })
     }
-} 
+
+}
