@@ -28,7 +28,15 @@ exports.acceptedConnections = async (req, res) => {
         if (!userConnections) {
             return res.status(404).json({ message: "No connections found " })
         }
-        res.json({ message: "fetched data successfull", data: userConnections })
+        // we get the connections by accepting their coonection request or accepting our connection request
+        // if logged in user is from user, then we don't want our own profile and we get others profile
+        const data = userConnections.map((obj) => {
+            if (obj.fromUserId.equals(loggedInUserId)) {
+                return obj.toUserId
+            }
+            return obj.fromUserId
+        })
+        res.json({ message: "fetched data successfull", "data": data })
     } catch (error) {
         res.status(400).json({ message: "ERROR: " + error.message })
     }
