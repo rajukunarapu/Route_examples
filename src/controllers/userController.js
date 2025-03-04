@@ -19,6 +19,7 @@ exports.recievedConnections = async (req, res) => {
     }
 }
 
+// connections
 exports.acceptedConnections = async (req, res) => {
     try {
         const loggedInUserId = req._id
@@ -42,14 +43,30 @@ exports.acceptedConnections = async (req, res) => {
     }
 }
 
-exports.usersFeed = async (req, res) => {
+exports.feed = async (req, res) => {
     try {
         const loggedInUserId = req._id
-        const users = await User.find({ _id: { $ne: loggedInUserId } })
-        if (!users) {
-            return res.status(404).json({ message: "Users data not found" })
-        }
-        res.send({ message: "fetched data successfully", data: users })
+        // find all connections where loggedInUserId is including in from and to
+        const connectionRequests = await ConnectionRequestModel.find({
+            $or: [{ fromUserId: loggedInUserId }, { toUserId: loggedInUserId }]
+        }).select('fromUserId toUserId')
+
+        // hide the user from feed where users alredy connected or ignored
+        const hideUsersFromFeed = new Set()
+        connectionRequests.forEach(req => {
+            hideUsersFromFeed.add(req.toUserId.toString())
+            hideUsersFromFeed.add(req.fromUserId.toString())
+        })
+
+        // finding users where there is no connection between to users and user itself
+        const users = await User.find({
+            $and: [
+                { _id: { $nin: Array.from(hideUsersFromFeed) } },
+                { _id: { $ne: loggedInUserId } }
+            ]
+        }).select(USER_SAFE_DATA)
+        res.json({ message: 'fetched the users', data: users })
+
 
     } catch (error) {
         res.status(400).json({ message: "ERROR: " + error.message })
